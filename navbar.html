@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Arik Fashion – Navbar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #fafafa;
+      --grey-light: #f0f0f0;
+      --grey-mid: #c8c8c8;
+      --grey-dark: #555;
+      --accent: #0a0a0a;
+      --nav-height: 72px;
+      --top-bar-height: 36px;
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body: 'Montserrat', sans-serif;
+      --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--white);
+      color: var(--black);
+      min-height: 200vh; /* for scroll demo */
+    }
+
+    /* ─── TOP ANNOUNCEMENT BAR ─── */
+    .top-bar {
+      background: var(--black);
+      color: var(--white);
+      height: var(--top-bar-height);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 500;
+      overflow: hidden;
+      position: relative;
+    }
+    .top-bar__ticker {
+      display: flex;
+      gap: 80px;
+      animation: ticker 22s linear infinite;
+      white-space: nowrap;
+    }
+    @keyframes ticker {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .top-bar__ticker span { opacity: 0.7; }
+    .top-bar__ticker strong { opacity: 1; }
+
+    /* ─── MAIN NAV ─── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--white);
+      border-bottom: 1px solid var(--grey-light);
+      height: var(--nav-height);
+      display: flex;
+      align-items: center;
+      transition: box-shadow var(--transition), background var(--transition);
+    }
+    nav.scrolled {
+      box-shadow: 0 2px 24px rgba(0,0,0,0.08);
+    }
+
+    .nav-inner {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 32px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* LEFT – links */
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--black);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 500;
+      position: relative;
+      padding-bottom: 2px;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--black);
+      transition: width var(--transition);
+    }
+    .nav-links a:hover::after,
+    .nav-links a.active::after { width: 100%; }
+
+    /* DROPDOWN */
+    .nav-item { position: relative; }
+    .nav-item > a { display: flex; align-items: center; gap: 4px; }
+    .nav-item > a svg.chevron {
+      width: 10px; height: 10px;
+      transition: transform var(--transition);
+      flex-shrink: 0;
+    }
+    .nav-item:hover > a svg.chevron { transform: rotate(180deg); }
+
+    .dropdown {
+      position: absolute;
+      top: calc(100% + 16px);
+      left: 50%;
+      transform: translateX(-50%) translateY(-4px);
+      background: var(--white);
+      border: 1px solid var(--grey-light);
+      min-width: 200px;
+      padding: 8px 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition), transform var(--transition);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    .nav-item:hover .dropdown {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateX(-50%) translateY(0);
+    }
+    .dropdown a {
+      display: block;
+      padding: 10px 20px;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+      transition: background var(--transition);
+    }
+    .dropdown a:hover { background: var(--grey-light); }
+    .dropdown::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 10px; height: 10px;
+      background: var(--white);
+      border-left: 1px solid var(--grey-light);
+      border-top: 1px solid var(--grey-light);
+      transform: translateX(-50%) rotate(45deg);
+    }
+
+    /* CENTER – logo */
+    .nav-logo {
+      text-align: center;
+      text-decoration: none;
+      color: var(--black);
+    }
+    .nav-logo__wordmark {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 300;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      line-height: 1;
+      display: block;
+    }
+    .nav-logo__sub {
+      font-size: 8px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      font-weight: 500;
+      color: var(--grey-dark);
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* RIGHT – icons */
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      justify-content: flex-end;
+    }
+    .nav-icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      transition: background var(--transition);
+      position: relative;
+    }
+    .nav-icon-btn:hover { background: var(--grey-light); }
+    .nav-icon-btn svg { width: 20px; height: 20px; }
+
+    /* Cart badge */
+    .cart-badge {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 16px;
+      height: 16px;
+      background: var(--black);
+      color: var(--white);
+      border-radius: 50%;
+      font-size: 9px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 0;
+      pointer-events: none;
+      transform: scale(0);
+      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .cart-badge.visible { transform: scale(1); }
+
+    /* Wishlist badge */
+    .wish-badge {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 8px;
+      height: 8px;
+      background: #c0392b;
+      border-radius: 50%;
+      transform: scale(0);
+      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .wish-badge.visible { transform: scale(1); }
+
+    /* Account */
+    .nav-actions .divider {
+      width: 1px;
+      height: 20px;
+      background: var(--grey-mid);
+    }
+
+    /* ─── SEARCH OVERLAY ─── */
+    .search-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10,10,10,0.96);
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 120px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .search-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .search-overlay__close {
+      position: absolute;
+      top: 28px;
+      right: 36px;
+      background: none;
+      border: none;
+      color: var(--white);
+      cursor: pointer;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-family: var(--font-body);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.7;
+      transition: opacity var(--transition);
+    }
+    .search-overlay__close:hover { opacity: 1; }
+    .search-overlay__label {
+      font-family: var(--font-display);
+      font-size: 13px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--grey-mid);
+      margin-bottom: 24px;
+    }
+    .search-overlay__input-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+    }
+    .search-overlay__input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--grey-dark);
+      color: var(--white);
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      padding: 8px 48px 8px 0;
+      outline: none;
+      caret-color: var(--white);
+      transition: border-color var(--transition);
+    }
+    .search-overlay__input::placeholder { color: var(--grey-dark); }
+    .search-overlay__input:focus { border-bottom-color: var(--white); }
+    .search-overlay__submit {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--grey-mid);
+      cursor: pointer;
+    }
+    .search-overlay__submit svg { width: 22px; height: 22px; }
+    .search-overlay__hint {
+      margin-top: 20px;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--grey-dark);
+      text-transform: uppercase;
+    }
+    .search-overlay__suggestions {
+      margin-top: 32px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 600px;
+    }
+    .search-chip {
+      border: 1px solid var(--grey-dark);
+      color: var(--grey-mid);
+      padding: 6px 16px;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all var(--transition);
+      background: transparent;
+      font-family: var(--font-body);
+    }
+    .search-chip:hover {
+      border-color: var(--white);
+      color: var(--white);
+    }
+
+    /* ─── CART DRAWER ─── */
+    .cart-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1900;
+      pointer-events: none;
+    }
+    .cart-overlay.open { pointer-events: all; }
+    .cart-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(10,10,10,0.4);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .cart-overlay.open .cart-backdrop { opacity: 1; }
+    .cart-drawer {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 420px;
+      max-width: 100vw;
+      height: 100%;
+      background: var(--white);
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      display: flex;
+      flex-direction: column;
+    }
+    .cart-overlay.open .cart-drawer { transform: translateX(0); }
+    .cart-drawer__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--grey-light);
+    }
+    .cart-drawer__title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+    }
+    .cart-drawer__close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--black);
+      display: flex;
+      padding: 4px;
+    }
+    .cart-drawer__close svg { width: 20px; height: 20px; }
+    .cart-drawer__body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 28px;
+    }
+    .cart-empty {
+      text-align: center;
+      padding: 60px 0;
+      color: var(--grey-dark);
+    }
+    .cart-empty svg { width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.3; }
+    .cart-empty p { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; }
+    .cart-item {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      gap: 14px;
+      align-items: start;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--grey-light);
+    }
+    .cart-item__img {
+      width: 80px;
+      height: 96px;
+      background: var(--grey-light);
+      object-fit: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--grey-dark);
+    }
+    .cart-item__info { padding-top: 2px; }
+    .cart-item__name { font-size: 12px; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; }
+    .cart-item__meta { font-size: 10px; color: var(--grey-dark); letter-spacing: 0.08em; margin-bottom: 8px; }
+    .cart-item__qty {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .qty-btn {
+      width: 24px; height: 24px;
+      border: 1px solid var(--grey-mid);
+      background: none;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all var(--transition);
+    }
+    .qty-btn:hover { background: var(--black); color: var(--white); border-color: var(--black); }
+    .qty-num { font-size: 12px; font-weight: 500; min-width: 20px; text-align: center; }
+    .cart-item__price { font-size: 13px; font-weight: 600; white-space: nowrap; padding-top: 2px; }
+    .cart-item__remove {
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-decoration: underline;
+      cursor: pointer;
+      color: var(--grey-dark);
+      background: none;
+      border: none;
+      font-family: var(--font-body);
+      margin-top: 6px;
+      display: block;
+    }
+    .cart-drawer__footer {
+      padding: 20px 28px 28px;
+      border-top: 1px solid var(--grey-light);
+    }
+    .cart-subtotal {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .cart-subtotal__label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--grey-dark); }
+    .cart-subtotal__amount { font-family: var(--font-display); font-size: 22px; font-weight: 500; }
+    .btn-checkout {
+      width: 100%;
+      background: var(--black);
+      color: var(--white);
+      border: none;
+      padding: 16px;
+      font-family: var(--font-body);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition);
+      margin-bottom: 12px;
+    }
+    .btn-checkout:hover { background: #222; }
+    .cart-links {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cart-link-btn {
+      background: none;
+      border: none;
+      font-family: var(--font-body);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      color: var(--grey-dark);
+      text-decoration: underline;
+      transition: color var(--transition);
+    }
+    .cart-link-btn:hover { color: var(--black); }
+    .cart-link-btn.danger:hover { color: #c0392b; }
+
+    /* ─── MOBILE MENU ─── */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--black);
+      transition: all 0.3s ease;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    .mobile-menu {
+      position: fixed;
+      top: var(--nav-height);
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--white);
+      z-index: 900;
+      overflow-y: auto;
+      transform: translateX(-100%);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      padding: 32px 28px;
+    }
+    .mobile-menu.open { transform: translateX(0); }
+    .mobile-menu ul { list-style: none; }
+    .mobile-menu ul li {
+      border-bottom: 1px solid var(--grey-light);
+    }
+    .mobile-menu ul li a {
+      display: block;
+      padding: 18px 0;
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: var(--black);
+      text-decoration: none;
+    }
+    .mobile-menu__sub {
+      list-style: none;
+      padding: 0 0 12px 16px;
+    }
+    .mobile-menu__sub li a {
+      font-family: var(--font-body);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 8px 0;
+      font-weight: 400;
+      color: var(--grey-dark);
+    }
+    .mobile-menu__footer {
+      margin-top: 32px;
+      display: flex;
+      gap: 16px;
+    }
+    .mobile-menu__footer a {
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--grey-dark);
+      text-decoration: none;
+    }
+
+    /* ─── DEMO CONTENT ─── */
+    .demo-hero {
+      min-height: calc(100vh - var(--nav-height) - var(--top-bar-height));
+      background: var(--grey-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .demo-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 8vw, 96px);
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .demo-hero p { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--grey-dark); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .nav-inner { grid-template-columns: auto 1fr auto; }
+    }
+    @media (max-width: 480px) {
+      .nav-inner { padding: 0 16px; }
+      .cart-drawer { width: 100vw; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP ANNOUNCEMENT BAR -->
+  <div class="top-bar" aria-label="Announcements">
+    <div class="top-bar__ticker">
+      <span>Free shipping on orders over <strong>₦50,000</strong></span>
+      <span>•</span>
+      <span>New collection — <strong>Arik Fashion 2025</strong></span>
+      <span>•</span>
+      <span>Exclusive styles crafted for you</span>
+      <span>•</span>
+      <span>Free shipping on orders over <strong>₦50,000</strong></span>
+      <span>•</span>
+      <span>New collection — <strong>Arik Fashion 2025</strong></span>
+      <span>•</span>
+      <span>Exclusive styles crafted for you</span>
+    </div>
+  </div>
+
+  <!-- MAIN NAVIGATION -->
+  <nav id="main-nav">
+    <div class="nav-inner">
+
+      <!-- LEFT: Nav Links -->
+      <ul class="nav-links" role="navigation" aria-label="Main navigation">
+        <li><a href="#" class="active">Home</a></li>
+
+        <li class="nav-item">
+          <a href="#">
+            Shop
+            <svg class="chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M2 4l4 4 4-4"/>
+            </svg>
+          </a>
+          <div class="dropdown" role="menu">
+            <a href="#" role="menuitem">New Arrivals</a>
+            <a href="#" role="menuitem">Dresses</a>
+            <a href="#" role="menuitem">Co-ord Sets</a>
+            <a href="#" role="menuitem">Tops</a>
+            <a href="#" role="menuitem">Bottoms</a>
+            <a href="#" role="menuitem">Accessories</a>
+          </div>
+        </li>
+
+        <li class="nav-item">
+          <a href="#">
+            Collections
+            <svg class="chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M2 4l4 4 4-4"/>
+            </svg>
+          </a>
+          <div class="dropdown" role="menu">
+            <a href="#" role="menuitem">Summer Edit</a>
+            <a href="#" role="menuitem">Evening Wear</a>
+            <a href="#" role="menuitem">Bridal</a>
+            <a href="#" role="menuitem">Everyday Luxury</a>
+          </div>
+        </li>
+
+        <li><a href="#">Lookbook</a></li>
+        <li><a href="#">About</a></li>
+      </ul>
+
+      <!-- CENTER: Logo -->
+      <a href="#" class="nav-logo" aria-label="Arik Fashion Home">
+        <span class="nav-logo__wordmark">Arik Fashion</span>
+        <span class="nav-logo__sub">Lagos · Nigeria</span>
+      </a>
+
+      <!-- RIGHT: Icons -->
+      <div class="nav-actions">
+
+        <!-- Search -->
+        <button class="nav-icon-btn" id="search-btn" aria-label="Search products">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7"/>
+            <path d="M21 21l-4.35-4.35"/>
+          </svg>
+        </button>
+
+        <!-- Wishlist -->
+        <button class="nav-icon-btn" id="wish-btn" aria-label="Wishlist">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+          <span class="wish-badge" id="wish-badge"></span>
+        </button>
+
+        <!-- Account -->
+        <button class="nav-icon-btn" aria-label="Account">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </button>
+
+        <div class="divider"></div>
+
+        <!-- Cart -->
+        <button class="nav-icon-btn" id="cart-btn" aria-label="Shopping cart">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          <span class="cart-badge" id="cart-badge">0</span>
+        </button>
+
+        <!-- Hamburger (mobile) -->
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Mobile navigation">
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li>
+        <a href="#">Shop</a>
+        <ul class="mobile-menu__sub">
+          <li><a href="#">New Arrivals</a></li>
+          <li><a href="#">Dresses</a></li>
+          <li><a href="#">Co-ord Sets</a></li>
+          <li><a href="#">Tops</a></li>
+          <li><a href="#">Accessories</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#">Collections</a>
+        <ul class="mobile-menu__sub">
+          <li><a href="#">Summer Edit</a></li>
+          <li><a href="#">Evening Wear</a></li>
+          <li><a href="#">Bridal</a></li>
+        </ul>
+      </li>
+      <li><a href="#">Lookbook</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+    <div class="mobile-menu__footer">
+      <a href="#">Log In</a>
+      <a href="#">Instagram</a>
+      <a href="#">WhatsApp</a>
+    </div>
+  </div>
+
+  <!-- SEARCH OVERLAY -->
+  <div class="search-overlay" id="search-overlay" role="dialog" aria-label="Search">
+    <button class="search-overlay__close" id="search-close">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M1 1l12 12M13 1L1 13"/>
+      </svg>
+      Close
+    </button>
+    <p class="search-overlay__label">Search Arik Fashion</p>
+    <div class="search-overlay__input-wrap">
+      <input
+        type="text"
+        class="search-overlay__input"
+        id="search-input"
+        placeholder="Search products…"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="Search"
+      />
+      <button class="search-overlay__submit" aria-label="Submit search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/>
+          <path d="M21 21l-4.35-4.35"/>
+        </svg>
+      </button>
+    </div>
+    <p class="search-overlay__hint">Press Enter to search</p>
+    <div class="search-overlay__suggestions">
+      <button class="search-chip" onclick="fillSearch(this)">Dresses</button>
+      <button class="search-chip" onclick="fillSearch(this)">New Arrivals</button>
+      <button class="search-chip" onclick="fillSearch(this)">Co-ord Sets</button>
+      <button class="search-chip" onclick="fillSearch(this)">Evening Wear</button>
+      <button class="search-chip" onclick="fillSearch(this)">Bridal</button>
+    </div>
+  </div>
+
+  <!-- CART DRAWER -->
+  <div class="cart-overlay" id="cart-overlay">
+    <div class="cart-backdrop" id="cart-backdrop"></div>
+    <div class="cart-drawer" role="dialog" aria-label="Shopping cart">
+      <div class="cart-drawer__header">
+        <span class="cart-drawer__title">Your Cart</span>
+        <button class="cart-drawer__close" id="cart-close" aria-label="Close cart">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="cart-drawer__body" id="cart-body">
+        <!-- Populated by JS -->
+      </div>
+      <div class="cart-drawer__footer" id="cart-footer" style="display:none">
+        <div class="cart-subtotal">
+          <span class="cart-subtotal__label">Subtotal</span>
+          <span class="cart-subtotal__amount" id="cart-subtotal">₦0</span>
+        </div>
+        <button class="btn-checkout">Proceed to Checkout</button>
+        <div class="cart-links">
+          <button class="cart-link-btn" onclick="closeCart()">Continue Shopping</button>
+          <button class="cart-link-btn danger" onclick="clearCart()">Clear Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEMO HERO -->
+  <div class="demo-hero">
+    <h1>Arik Fashion</h1>
+    <p>Navbar preview — scroll to see sticky effect</p>
+  </div>
+
+  <script>
+    // ── State ──
+    let cart = [];
+    let wishlistCount = 0;
+
+    // ── Scroll: sticky shadow ──
+    const mainNav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+      mainNav.classList.toggle('scrolled', window.scrollY > 10);
+    });
+
+    // ── Search ──
+    const searchBtn    = document.getElementById('search-btn');
+    const searchClose  = document.getElementById('search-close');
+    const searchOverlay = document.getElementById('search-overlay');
+    const searchInput  = document.getElementById('search-input');
+
+    searchBtn.addEventListener('click', () => {
+      searchOverlay.classList.add('open');
+      setTimeout(() => searchInput.focus(), 100);
+    });
+    searchClose.addEventListener('click', closeSearch);
+    searchOverlay.addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
+    function closeSearch() { searchOverlay.classList.remove('open'); }
+    function fillSearch(el) {
+      searchInput.value = el.textContent;
+      searchInput.focus();
+    }
+
+    // ── Hamburger ──
+    const hamburger  = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    hamburger.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('open');
+      hamburger.classList.toggle('open', open);
+      hamburger.setAttribute('aria-expanded', open);
+    });
+
+    // ── Cart ──
+    const cartBtn     = document.getElementById('cart-btn');
+    const cartOverlay = document.getElementById('cart-overlay');
+    const cartBackdrop = document.getElementById('cart-backdrop');
+    const cartClose   = document.getElementById('cart-close');
+    const cartBadge   = document.getElementById('cart-badge');
+    const cartBody    = document.getElementById('cart-body');
+    const cartFooter  = document.getElementById('cart-footer');
+    const cartSubtotal = document.getElementById('cart-subtotal');
+
+    cartBtn.addEventListener('click', openCart);
+    cartClose.addEventListener('click', closeCart);
+    cartBackdrop.addEventListener('click', closeCart);
+
+    function openCart() { cartOverlay.classList.add('open'); renderCart(); }
+    function closeCart() { cartOverlay.classList.remove('open'); }
+
+    function updateBadge() {
+      const total = cart.reduce((s, i) => s + i.qty, 0);
+      cartBadge.textContent = total;
+      cartBadge.classList.toggle('visible', total > 0);
+    }
+
+    function formatPrice(n) {
+      return '₦' + n.toLocaleString('en-NG');
+    }
+
+    function renderCart() {
+      if (cart.length === 0) {
+        cartBody.innerHTML = `
+          <div class="cart-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+            <p>Your cart is empty</p>
+          </div>`;
+        cartFooter.style.display = 'none';
+        return;
+      }
+      cartBody.innerHTML = cart.map((item, idx) => `
+        <div class="cart-item">
+          <div class="cart-item__img">
+            <span style="font-size:9px;text-align:center;padding:4px;">IMAGE</span>
+          </div>
+          <div class="cart-item__info">
+            <div class="cart-item__name">${item.name}</div>
+            <div class="cart-item__meta">${item.color} · ${item.size}</div>
+            <div class="cart-item__qty">
+              <button class="qty-btn" onclick="changeQty(${idx}, -1)">−</button>
+              <span class="qty-num">${item.qty}</span>
+              <button class="qty-btn" onclick="changeQty(${idx}, 1)">+</button>
+            </div>
+            <button class="cart-item__remove" onclick="removeItem(${idx})">Remove</button>
+          </div>
+          <div class="cart-item__price">${formatPrice(item.price * item.qty)}</div>
+        </div>
+      `).join('');
+
+      const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+      cartSubtotal.textContent = formatPrice(subtotal);
+      cartFooter.style.display = 'block';
+    }
+
+    function changeQty(idx, delta) {
+      cart[idx].qty = Math.max(1, cart[idx].qty + delta);
+      updateBadge();
+      renderCart();
+      showAlert(`Quantity updated`);
+    }
+
+    function removeItem(idx) {
+      cart.splice(idx, 1);
+      updateBadge();
+      renderCart();
+    }
+
+    function clearCart() {
+      cart = [];
+      updateBadge();
+      renderCart();
+    }
+
+    // Demo: add a dummy item to show cart works
+    function demoAddToCart() {
+      const items = [
+        { name: 'Adire Wrap Dress', color: 'Black', size: 'M', price: 45000, qty: 1 },
+        { name: 'Lace Co-ord Set',  color: 'White', size: 'S', price: 62000, qty: 1 },
+      ];
+      const pick = items[Math.floor(Math.random() * items.length)];
+      const existing = cart.find(i => i.name === pick.name && i.size === pick.size);
+      if (existing) { existing.qty++; } else { cart.push({...pick}); }
+      updateBadge();
+      showAlert(`"${pick.name}" added to cart`);
+    }
+
+    // Trigger demo add-to-cart on hero click for preview
+    document.querySelector('.demo-hero').addEventListener('click', demoAddToCart);
+
+    // ── Wishlist badge ──
+    const wishBtn   = document.getElementById('wish-btn');
+    const wishBadge = document.getElementById('wish-badge');
+    wishBtn.addEventListener('click', () => {
+      wishlistCount = wishlistCount === 0 ? 1 : 0;
+      wishBadge.classList.toggle('visible', wishlistCount > 0);
+    });
+
+    // ── Alert toast ──
+    function showAlert(msg) {
+      let toast = document.getElementById('af-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'af-toast';
+        Object.assign(toast.style, {
+          position: 'fixed', bottom: '28px', left: '50%',
+          transform: 'translateX(-50%) translateY(10px)',
+          background: 'var(--black)', color: 'var(--white)',
+          padding: '12px 24px', fontSize: '11px',
+          letterSpacing: '0.12em', textTransform: 'uppercase',
+          fontFamily: 'var(--font-body)', zIndex: '9999',
+          opacity: '0', transition: 'all 0.3s ease',
+          pointerEvents: 'none', whiteSpace: 'nowrap',
+        });
+        document.body.appendChild(toast);
+      }
+      toast.textContent = msg;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateX(-50%) translateY(0)';
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(10px)';
+      }, 2500);
+    }
+  </script>
+</body>
+</html>
