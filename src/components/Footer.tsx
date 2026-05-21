@@ -49,7 +49,7 @@ export default function Footer() {
 
             {/* Brand Column */}
             <div style={s.brandCol}>
-              <a href="/" style={s.footerLogo}>ARIK<br />FASHION</a>
+              <a href="/" style={s.footerLogo}>Aital<br />FASHION</a>
               <p style={s.brandTagline}>Contemporary African luxury, crafted in Lagos — worn worldwide.</p>
               <div style={s.socialRow}>
                 <a href="https://wa.me/2349072297729" target="_blank" rel="noreferrer" title="WhatsApp" style={s.socialBtn} aria-label="WhatsApp">
@@ -131,9 +131,9 @@ export default function Footer() {
               <h4 style={s.colTitle}>Get in Touch</h4>
               <div style={s.contactBlock}>
                 {[
-                  { icon: '📍', label: 'Studio Address', val: '4 Adeleke Street, Benjamin\nEleyele, Ibadan, Oyo State', href: 'https://maps.google.com' },
-                  { icon: '📞', label: 'WhatsApp & Calls', val: '+234 907 229 7729', href: 'tel:+2349072297729' },
-                  { icon: '✉️', label: 'Email', val: 'arikfashion.ng@gmail.com', href: 'mailto:arikfashion.ng@gmail.com' },
+                  { icon: '📍', label: 'Studio Address', val: 'Eleyele, Ibadan, Oyo State', href: 'https://maps.google.com' },
+                  { icon: '📞', label: 'WhatsApp & Calls', val: '+234 706 373 0930', href: 'tel:+2347063730930' },
+                  { icon: '✉️', label: 'Email', val: 'Aitaltechvolution@gmail.com', href: 'mailto:Aitaltechvolution.ng@gmail.com' },
                   { icon: '⏰', label: 'Studio Hours', val: 'Mon–Sat: 9am – 6pm WAT', href: null },
                 ].map(item => (
                   <div key={item.label} style={s.contactItem}>
@@ -172,7 +172,7 @@ export default function Footer() {
 
           {/* Bottom Bar */}
           <div className="bottom-bar" style={s.bottomBar}>
-            <p style={s.copyright}>© {year} Arik Fashion. All rights reserved.</p>
+            <p style={s.copyright}>© {year} Aital Fashion. All rights reserved.</p>
             <div style={s.legalLinks}>
               {[
                 { label: 'Privacy Policy', href: '/privacy' },

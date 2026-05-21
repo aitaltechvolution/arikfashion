@@ -67,7 +67,7 @@ export default function AboutPage() {
           <p style={s.heroEyebrow}>Est. Lagos, 2014</p>
           <h1 style={s.heroTitle}>Fashion Born<br />From the Soil</h1>
           <p style={s.heroSub}>
-            We are Arik Fashion — a Lagos-based luxury label crafting contemporary African wear
+            We are Aital Fashion — a Lagos-based luxury label crafting contemporary African wear
             for women who refuse to be invisible.
           </p>
         </div>
@@ -80,7 +80,7 @@ export default function AboutPage() {
           <div style={s.storyImgWrap}>
             <img
               src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80"
-              alt="Arik Fashion atelier"
+              alt="Aital Fashion atelier"
               style={s.storyImg}
             />
             <div style={s.storyImgCaption}>Our Lagos Atelier, 2024</div>
@@ -89,7 +89,7 @@ export default function AboutPage() {
             <p style={s.eyebrow}>Our Story</p>
             <h2 style={s.sectionTitle}>A Decade of<br />Dressing Lagos</h2>
             <p style={s.bodyText}>
-              Arik Fashion was born in 2014 in a small studio on Lagos Island, with a single Singer sewing machine and an audacious belief: that Nigerian women deserved clothes designed specifically for them — their bodies, their heat, their occasions, their pride.
+              Aital Fashion was born in 2014 in a small studio on Lagos Island, with a single Singer sewing machine and an audacious belief: that Nigerian women deserved clothes designed specifically for them — their bodies, their heat, their occasions, their pride.
             </p>
             <p style={s.bodyText}>
               What began as bespoke wedding and event wear has grown into a full ready-to-order brand, shipping to over 40 countries. We have dressed entrepreneurs, artists, diplomats, and mothers — united by a desire to wear their heritage beautifully.

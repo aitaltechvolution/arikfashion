@@ -429,7 +429,7 @@ function ProductDetail({ product: p }: { product: Product }) {
             {/* Share */}
             <div style={s.shareRow}>
               <span style={s.shareLabel}>Share:</span>
-              <a href={`https://twitter.com/intent/tweet?text=Check out ${p.name} on Arik Fashion!`} target="_blank" rel="noreferrer" style={s.shareBtn} title="Share on X">𝕏</a>
+              <a href={`https://twitter.com/intent/tweet?text=Check out ${p.name} on Aital Fashion!`} target="_blank" rel="noreferrer" style={s.shareBtn} title="Share on X">𝕏</a>
               <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`} target="_blank" rel="noreferrer" style={s.shareBtn} title="Share on Facebook">f</a>
               <a href={`https://wa.me/2349072297729?text=${encodeURIComponent(p.name + ' - ' + (typeof window !== 'undefined' ? window.location.href : ''))}`} target="_blank" rel="noreferrer" style={s.shareBtn} title="Share on WhatsApp">W</a>
             </div>
@@ -468,7 +468,7 @@ function ProductDetail({ product: p }: { product: Product }) {
               <div>
                 <p style={s.descPara}>{p.description}</p>
                 <p style={s.descPara}>
-                  Each Arik Fashion piece is thoughtfully crafted in Lagos, Nigeria, using premium fabrics sourced locally and internationally. Our sizing is true-to-fit — please refer to the size guide before ordering. All pieces are made-to-order, so please allow 7–9 working days for production.
+                  Each Aital Fashion piece is thoughtfully crafted in Lagos, Nigeria, using premium fabrics sourced locally and internationally. Our sizing is true-to-fit — please refer to the size guide before ordering. All pieces are made-to-order, so please allow 7–9 working days for production.
                 </p>
                 <ul style={s.descList}>
                   <li>Premium quality fabric</li>

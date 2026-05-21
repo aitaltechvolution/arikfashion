@@ -76,10 +76,10 @@ export default function Navbar() {
         <div style={styles.ticker}>
           {[
             'Free shipping on orders over ₦50,000', '·',
-            'New Arrivals – Arik Fashion 2026', '·',
+            'New Arrivals – Aital Fashion 2026', '·',
             'Exclusively crafted in Lagos', '·',
             'Free shipping on orders over ₦50,000', '·',
-            'New Arrivals – Arik Fashion 2026', '·',
+            'New Arrivals – Aital Fashion 2026', '·',
             'Exclusively crafted in Lagos',
           ].map((t, i) => (
             <span key={i} style={{ opacity: t === '·' ? 0.35 : 0.85 }}>{t}</span>
@@ -126,7 +126,7 @@ export default function Navbar() {
 
           {/* CENTER – Logo */}
           <a href="/" className="nav-logo-center" style={styles.logo}>
-            <span className="nav-logo-word" style={styles.logoWord}>Arik Fashion</span>
+            <span className="nav-logo-word" style={styles.logoWord}>Aital Fashion</span>
             <span className="nav-logo-sub" style={styles.logoSub}>Lagos · Nigeria</span>
           </a>
 
@@ -212,7 +212,7 @@ export default function Navbar() {
         <div style={styles.mobileFooter}>
           <a href="/account" style={styles.mobileFooterLink} onClick={() => setMobileOpen(false)}>My Account</a>
           <a href="https://instagram.com" target="_blank" rel="noreferrer" style={styles.mobileFooterLink}>Instagram</a>
-          <a href="https://wa.me/2349072297729" target="_blank" rel="noreferrer" style={styles.mobileFooterLink}>WhatsApp</a>
+          <a href="https://wa.me/2347063730930" target="_blank" rel="noreferrer" style={styles.mobileFooterLink}>WhatsApp</a>
         </div>
       </div>
 

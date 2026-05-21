@@ -279,7 +279,7 @@ function PageHeader({ mounted }: { mounted: boolean }) {
         transform: mounted ? 'none' : 'translateY(16px)',
         transition: 'all 0.7s ease 0.1s',
       }}>
-        <p style={header.eyebrow}>Arik Fashion · 2025</p>
+        <p style={header.eyebrow}>Aital Fashion · 2026</p>
         <h1 style={header.heading}>All Products</h1>
         <p style={header.sub}>Made for a woman who knows her worth and dresses like it.</p>
       </div>
@@ -471,11 +471,12 @@ const header: Record<string, React.CSSProperties> = {
     background: '#0a0a0a',
   },
   bg: {
+    backgroundAttachment: "fixed",
     position: 'absolute', inset: 0,
     backgroundImage: `url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1600&q=75')`,
     backgroundSize: 'cover',
-    backgroundPosition: 'center 30%',
-    opacity: 0.38,
+    backgroundPosition: 'center',
+    opacity: 0.38
   },
   overlay: {
     position: 'absolute', inset: 0,

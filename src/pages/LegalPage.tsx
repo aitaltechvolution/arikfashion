@@ -9,7 +9,7 @@ const CONTENT: Record<Kind, { title: string; eyebrow: string; updated: string; s
     updated: 'January 2026',
     sections: [
       { h: 'Introduction', p: [
-        'Arik Fashion ("we", "us", "our") respects your privacy. This Privacy Policy explains how we collect, use, and protect your personal information when you visit arikfashion.com or make a purchase from us.',
+        'Aital Fashion ("we", "us", "our") respects your privacy. This Privacy Policy explains how we collect, use, and protect your personal information when you visit Aitalfashion.com or make a purchase from us.',
       ]},
       { h: 'Information We Collect', p: [
         'We collect information you provide directly to us, including your name, email address, shipping address, billing address, phone number, and payment details when you create an account or place an order.',
@@ -22,13 +22,13 @@ const CONTENT: Record<Kind, { title: string; eyebrow: string; updated: string; s
         'We do not sell your personal information. We share information only with trusted service providers (payment processors, shipping carriers, analytics providers) who help us run the business, and where required by law.',
       ]},
       { h: 'Your Rights', p: [
-        'You have the right to access, correct, or delete your personal information, and to opt out of marketing emails at any time. To exercise these rights, contact us at privacy@arikfashion.com.',
+        'You have the right to access, correct, or delete your personal information, and to opt out of marketing emails at any time. To exercise these rights, contact us at privacy@Aitalfashion.com.',
       ]},
       { h: 'Data Security', p: [
         'We use industry-standard safeguards including SSL encryption and PCI-compliant payment processing to protect your information.',
       ]},
       { h: 'Contact Us', p: [
-        'Questions about this Privacy Policy? Email us at privacy@arikfashion.com.',
+        'Questions about this Privacy Policy? Email us at privacy@Aitalfashion.com.',
       ]},
     ],
   },
@@ -38,7 +38,7 @@ const CONTENT: Record<Kind, { title: string; eyebrow: string; updated: string; s
     updated: 'January 2026',
     sections: [
       { h: 'Agreement', p: [
-        'By accessing or using arikfashion.com, you agree to these Terms of Service. If you do not agree, please do not use the site.',
+        'By accessing or using Aitalfashion.com, you agree to these Terms of Service. If you do not agree, please do not use the site.',
       ]},
       { h: 'Products & Pricing', p: [
         'We strive to display product colors, sizes, and details accurately, but slight variations may occur. All prices are listed in Nigerian Naira (₦) and are subject to change without notice. We reserve the right to limit quantities and refuse orders.',
@@ -53,10 +53,10 @@ const CONTENT: Record<Kind, { title: string; eyebrow: string; updated: string; s
         'Unworn items in original condition with tags attached may be returned within 14 days of delivery. Sale items and intimates are final sale. See our returns page for full details.',
       ]},
       { h: 'Intellectual Property', p: [
-        'All content on this site — including text, images, logos, and designs — is owned by Arik Fashion and protected by copyright and trademark law. You may not reproduce, distribute, or use any content without our written permission.',
+        'All content on this site — including text, images, logos, and designs — is owned by Aital Fashion and protected by copyright and trademark law. You may not reproduce, distribute, or use any content without our written permission.',
       ]},
       { h: 'Limitation of Liability', p: [
-        'To the fullest extent permitted by law, Arik Fashion shall not be liable for any indirect, incidental, or consequential damages arising from the use of this site or our products.',
+        'To the fullest extent permitted by law, Aital Fashion shall not be liable for any indirect, incidental, or consequential damages arising from the use of this site or our products.',
       ]},
       { h: 'Governing Law', p: [
         'These Terms are governed by the laws of the Federal Republic of Nigeria.',
@@ -87,7 +87,7 @@ const CONTENT: Record<Kind, { title: string; eyebrow: string; updated: string; s
         'We may update this Cookie Policy from time to time. The "Last updated" date above indicates when changes were made.',
       ]},
       { h: 'Contact', p: [
-        'Questions? Email privacy@arikfashion.com.',
+        'Questions? Email privacy@Aitalfashion.com.',
       ]},
     ],
   },

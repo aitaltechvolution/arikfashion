@@ -183,13 +183,13 @@ export default function ContactPage() {
                   </div>
                 </a>
 
-                <a href="mailto:arikfashion.ng@gmail.com" className="contact-info-link" style={{ color: '#d4c9c0' }}>
+                <a href="mailto:Aitalfashion.ng@gmail.com" className="contact-info-link" style={{ color: '#d4c9c0' }}>
                   <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'rgba(201,169,110,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" strokeWidth="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>
                   </div>
                   <div>
                     <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 13, fontWeight: 600, marginBottom: 2, color: '#faf8f5' }}>Email Us</div>
-                    <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 10, color: '#8a7e76' }}>arikfashion.ng@gmail.com</div>
+                    <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 10, color: '#8a7e76' }}>Aitalfashion.ng@gmail.com</div>
                   </div>
                 </a>
 

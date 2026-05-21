@@ -36,19 +36,19 @@ export function useProducts() {
       return;
     }
 
-    sb.from('products')
-      .select('*')
-      .eq('is_published', true)
-      .order('created_at', { ascending: false })
-      .then(({ data, error }) => {
-        if (error || !data || data.length === 0) {
-          // Table empty or error — fall back to static data
-          setProducts(STATIC_PRODUCTS);
-        } else {
-          setProducts(data.map(dbRowToProduct));
-        }
-        setLoading(false);
-      });
+    // sb.from('products')
+    //   .select('*')
+    //   .eq('is_published', true)
+    //   .order('created_at', { ascending: false })
+    //   .then(({ data, error }) => {
+    //     if (error || !data || data.length === 0) {
+    //       // Table empty or error — fall back to static data
+    //       setProducts(STATIC_PRODUCTS);
+    //     } else {
+    //       setProducts(data.map(dbRowToProduct));
+    //     }
+    //     setLoading(false);
+    //   });
   }, []);
 
   return { products, loading };

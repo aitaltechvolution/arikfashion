@@ -78,6 +78,7 @@ const heroStyles: Record<string, React.CSSProperties> = {
     backgroundSize: 'cover',
     backgroundPosition: 'center 20%',
     opacity: 0.55,
+    backgroundAttachment: 'fixed',
   },
   overlay: {
     position: 'absolute', inset: 0,
@@ -351,7 +352,7 @@ function EditorialBanner() {
         />
       </div>
       <div style={bannerStyles.textSide}>
-        <p style={bannerStyles.eyebrow}>The Arik Story</p>
+        <p style={bannerStyles.eyebrow}>The Aital Story</p>
         <h2 style={bannerStyles.heading}>Fashion that<br /><em>speaks first</em></h2>
         <p style={bannerStyles.body}>
           Every piece in our collection is designed with intention — where African craftsmanship meets contemporary luxury. We create clothes that command attention before you say a word.
@@ -476,7 +477,7 @@ const IG_IMGS = [
 function InstagramStrip() {
   return (
     <section style={igStyles.section}>
-      <SectionHeader title="@arik.fashion" sub="Follow us on Instagram" />
+      <SectionHeader title="@Aital.fashion" sub="Follow us on Instagram" />
       <div style={igStyles.grid}>
         {IG_IMGS.map((src, i) => (
           <a key={i} href="https://instagram.com" target="_blank" rel="noreferrer" style={igStyles.item}>

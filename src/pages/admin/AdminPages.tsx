@@ -368,7 +368,7 @@ export function AdminDiscounts() {
       <div style={{ ...card, marginBottom: 18 }}>
         <h3 style={sec}>Create code</h3>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 100px', gap: 10, alignItems: 'end' }} className="disc-row">
-          <div><label style={label}>Code</label><input style={input} value={form.code} onChange={e => setForm({ ...form, code: e.target.value.toUpperCase() })} placeholder="ARIK10" /></div>
+          <div><label style={label}>Code</label><input style={input} value={form.code} onChange={e => setForm({ ...form, code: e.target.value.toUpperCase() })} placeholder="Aital10" /></div>
           <div><label style={label}>Type</label>
             <select style={input} value={form.kind} onChange={e => setForm({ ...form, kind: e.target.value })}>
               <option value="percent">Percent (%)</option><option value="fixed">Fixed (₦)</option>

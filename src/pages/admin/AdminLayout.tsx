@@ -55,7 +55,7 @@ export default function AdminLayout({
           <a href="/" style={{
             display: 'block', padding: '0 24px 24px', fontFamily: 'Cormorant Garamond, serif',
             fontSize: 22, letterSpacing: '0.18em', borderBottom: '1px solid #1e1e1e', marginBottom: 18,
-          }}>ARIK · ADMIN</a>
+          }}>Aital · ADMIN</a>
           <nav style={{ display: 'flex', flexDirection: 'column' }}>
             {SIDEBAR_ITEMS.map(item => {
               const active = item.path === '/admin'
