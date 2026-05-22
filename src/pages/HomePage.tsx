@@ -38,7 +38,7 @@ function Hero() {
       <div style={heroStyles.overlay} />
 
       <div style={{ ...heroStyles.content, opacity: loaded ? 1 : 0, transform: loaded ? 'none' : 'translateY(20px)', transition: 'all 0.9s ease 0.1s' }}>
-        <p style={heroStyles.eyebrow}>New Season · 2025</p>
+        <p style={heroStyles.eyebrow}>New Season · 2026</p>
         <h1 style={heroStyles.heading}>
           Dressed<br />
           <em style={heroStyles.italic}>For You</em>

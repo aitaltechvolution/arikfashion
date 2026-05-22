@@ -28,13 +28,13 @@ export function useProducts() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const sb = getSupabase();
-    if (!sb) {
+    // const sb = getSupabase();
+    // if (!sb) {
       // No Supabase configured — fall back to static seed data
       setProducts(STATIC_PRODUCTS);
       setLoading(false);
       return;
-    }
+    // }
 
     // sb.from('products')
     //   .select('*')
