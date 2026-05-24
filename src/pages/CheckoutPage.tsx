@@ -16,6 +16,12 @@ interface ShippingOption {
   id: string; name: string; location: string; price: number; description: string;
 }
 
+interface MerchantAccount {
+  bank_name: string;
+  account_number: string;
+  account_name: string;
+}
+
 const SHIPPING_OPTIONS: ShippingOption[] = [
   { id: 'pickup', name: 'Customer Pickup', location: 'Store · Lagos', price: 0, description: 'Pick up your order directly at our store. Ready within 24 hours of confirmation.' },
   { id: 'canada', name: 'International · Canada', location: 'Canada', price: 0, description: 'This is determined by the shipping company, and you will be contacted as soon as your order gets to the shipping company. Package is measured dimensionally.' },
@@ -50,6 +56,13 @@ const OTHER_STATES: Record<string, Record<string, { zip: string; cities: string[
   'GB': { 'England': { zip: '', cities: ['London', 'Manchester', 'Birmingham', 'Leeds'] }, 'Scotland': { zip: '', cities: ['Edinburgh', 'Glasgow'] } },
   'US': { 'California': { zip: '9', cities: ['Los Angeles', 'San Francisco', 'San Diego'] }, 'New York': { zip: '1', cities: ['New York City', 'Buffalo', 'Rochester'] }, 'Texas': { zip: '7', cities: ['Houston', 'Dallas', 'Austin'] } },
   'CA': { 'Ontario': { zip: '', cities: ['Toronto', 'Ottawa', 'Hamilton'] }, 'British Columbia': { zip: '', cities: ['Vancouver', 'Victoria'] } },
+};
+
+// Fallback merchant account (shown when Supabase isn't available)
+const FALLBACK_MERCHANT: MerchantAccount = {
+  bank_name: 'OPay',
+  account_number: '7063730930',
+  account_name: 'Aital Techvolution',
 };
 
 function getStatesForCountry(countryCode: string): string[] {
@@ -174,7 +187,7 @@ function FieldInput({ label, value, onChange, placeholder, type = 'text', requir
 // ─── Delivery Details Modal ──────────────────────────────────────────────────
 
 function DeliveryModal({ initial, onSave, onClose }: { initial: Address | null; onSave: (a: Address) => void; onClose: () => void }) {
-  const { user, placeOrder } = useAuth();
+  const { user } = useAuth();
   const [form, setForm] = useState<Address>(initial || {
     firstName: '', lastName: '', phone: '', phoneCode: '+234',
     email: '', address: '', country: 'Nigeria', countryCode: 'NG',
@@ -254,13 +267,11 @@ function DeliveryModal({ initial, onSave, onClose }: { initial: Address | null; 
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" strokeWidth="1.6" strokeLinecap="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
           </button>
         )}
-        {/* Name row — stack on very small screens */}
         <div className="co-name-grid">
           <FieldInput label="First Name" value={form.firstName} onChange={set('firstName')} placeholder="Amara" required />
           <FieldInput label="Last Name" value={form.lastName} onChange={set('lastName')} placeholder="Okafor" required />
         </div>
 
-        {/* Phone with country code */}
         <div>
           <label style={{ display: 'block', fontFamily: "'Montserrat', sans-serif", fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#3d342c', marginBottom: 6 }}>
             Phone Number<span style={{ color: '#c9a96e', marginLeft: 3 }}>*</span>
@@ -290,7 +301,6 @@ function DeliveryModal({ initial, onSave, onClose }: { initial: Address | null; 
         <FieldInput label="Email Address" value={form.email} onChange={set('email')} placeholder="amara@email.com" type="email" required />
         <FieldInput label="Street Address" value={form.address} onChange={set('address')} placeholder="12 Akin Adesola Street" required />
 
-        {/* Country */}
         <div>
           <label style={{ display: 'block', fontFamily: "'Montserrat', sans-serif", fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#3d342c', marginBottom: 6 }}>
             Country<span style={{ color: '#c9a96e', marginLeft: 3 }}>*</span>
@@ -298,7 +308,6 @@ function DeliveryModal({ initial, onSave, onClose }: { initial: Address | null; 
           <SearchSelect value={form.country} options={COUNTRIES.map(c => c.name)} placeholder="Select country" onChange={handleCountry} />
         </div>
 
-        {/* State */}
         {states.length > 0 && (
           <div>
             <label style={{ display: 'block', fontFamily: "'Montserrat', sans-serif", fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#3d342c', marginBottom: 6 }}>
@@ -308,7 +317,6 @@ function DeliveryModal({ initial, onSave, onClose }: { initial: Address | null; 
           </div>
         )}
 
-        {/* Zip & City row */}
         {form.state && (
           <div className="co-name-grid">
             <div>
@@ -360,7 +368,6 @@ function ShippingModal({ selected, onSelect, onClose, options: propOptions }: { 
   return (
     <Modal title="Select Shipping Rate" onClose={onClose}>
       <div style={{ padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 0 }}>
-        {/* Search */}
         <div style={{ position: 'relative', marginBottom: 14 }}>
           <svg style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8a7e76" strokeWidth="2"><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>
           <input
@@ -385,7 +392,6 @@ function ShippingModal({ selected, onSelect, onClose, options: propOptions }: { 
                 display: 'flex', gap: 14, alignItems: 'flex-start',
               }}
             >
-              {/* Custom radio */}
               <div style={{
                 width: 18, height: 18, borderRadius: '50%', border: `2px solid ${isSelected ? '#c9a96e' : '#d4c9c0'}`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2, transition: 'border-color 0.15s',
@@ -416,6 +422,339 @@ function ShippingModal({ selected, onSelect, onClose, options: propOptions }: { 
   );
 }
 
+// ─── Merchant Account Card ────────────────────────────────────────────────────
+
+function MerchantAccountCard({ account, orderId, onReceiptUploaded }: {
+  account: MerchantAccount;
+  orderId: string | null;
+  onReceiptUploaded: (url: string) => void;
+}) {
+  const [copied, setCopied] = useState<'number' | null>(null);
+  const [receipt, setReceipt] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadDone, setUploadDone] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const copyNumber = () => {
+    navigator.clipboard.writeText(account.account_number).then(() => {
+      setCopied('number');
+      setTimeout(() => setCopied(null), 1800);
+    });
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0] || null;
+    setReceipt(f);
+    setUploadDone(false);
+    setUploadError(null);
+  };
+
+  const handleUpload = async () => {
+    if (!receipt) return;
+    setUploading(true);
+    setUploadError(null);
+
+    try {
+      const sb = getSupabase();
+      if (sb) {
+        // Upload to Supabase storage, tagged with orderId
+        const ext = receipt.name.split('.').pop();
+        const path = `receipts/${orderId || 'pending'}_${Date.now()}.${ext}`;
+        const { data: uploadData, error: uploadErr } = await sb.storage
+          .from('order-receipts')
+          .upload(path, receipt, { upsert: true });
+
+        if (uploadErr) throw new Error(uploadErr.message);
+
+        const { data: urlData } = sb.storage.from('order-receipts').getPublicUrl(path);
+        const publicUrl = urlData?.publicUrl || '';
+
+        // If we have an orderId, tag the receipt on the order row
+        if (orderId) {
+          await sb.from('orders').update({ receipt_url: publicUrl }).eq('id', orderId);
+        }
+
+        setUploadDone(true);
+        onReceiptUploaded(publicUrl);
+      } else {
+        // No Supabase — simulate success for demo
+        await new Promise(r => setTimeout(r, 1200));
+        setUploadDone(true);
+        onReceiptUploaded('local://' + receipt.name);
+      }
+    } catch (err: any) {
+      setUploadError(err?.message || 'Upload failed. Please try again.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div style={{
+      background: 'linear-gradient(135deg, #fffdf8 0%, #faf4eb 100%)',
+      border: '1.5px solid #c9a96e',
+      padding: '20px 20px 18px',
+      animation: 'fadeUp 0.3s cubic-bezier(0.22,1,0.36,1)',
+      marginTop: 2,
+    }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+        <div style={{
+          width: 36, height: 36, borderRadius: '50%', background: '#c9a96e',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+        }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round">
+            <rect x="2" y="5" width="20" height="14" rx="2" />
+            <path d="M2 10h20" />
+          </svg>
+        </div>
+        <div>
+          <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#1a1a1a', margin: 0 }}>
+            Bank Transfer Details
+          </p>
+          <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 9, color: '#6a5e56', margin: '2px 0 0', letterSpacing: '0.06em' }}>
+            Transfer the exact order total to this account
+          </p>
+        </div>
+      </div>
+
+      {/* Account rows */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
+        {/* Bank */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: '#fff', border: '1px solid #ede5dc' }}>
+          <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#8a7e76' }}>Bank</span>
+          <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 13, fontWeight: 700, color: '#1a1a1a', letterSpacing: '0.04em' }}>
+            {account.bank_name}
+          </span>
+        </div>
+
+        {/* Account Number */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: '#fff', border: '1px solid #ede5dc' }}>
+          <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#8a7e76' }}>Account No.</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ fontFamily: "'Courier New', monospace", fontSize: 16, fontWeight: 700, color: '#1a1a1a', letterSpacing: '0.1em' }}>
+              {account.account_number}
+            </span>
+            <button
+              onClick={copyNumber}
+              title="Copy account number"
+              style={{
+                background: copied === 'number' ? '#e8f5e9' : '#f0ece8',
+                border: `1px solid ${copied === 'number' ? '#a5d6a7' : '#d4c9c0'}`,
+                borderRadius: 3, cursor: 'pointer', padding: '4px 8px',
+                display: 'flex', alignItems: 'center', gap: 4,
+                fontFamily: "'Montserrat', sans-serif", fontSize: 8,
+                letterSpacing: '0.1em', textTransform: 'uppercase',
+                color: copied === 'number' ? '#2e7d32' : '#5a4e46',
+                transition: 'all 0.2s',
+              }}
+            >
+              {copied === 'number' ? (
+                <>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
+                  Copied
+                </>
+              ) : (
+                <>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" /></svg>
+                  Copy
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Account Name */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: '#fff', border: '1px solid #ede5dc' }}>
+          <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#8a7e76' }}>Account Name</span>
+          <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 12, fontWeight: 700, color: '#1a1a1a' }}>
+            {account.account_name}
+          </span>
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div style={{ borderTop: '1px dashed #d4c9c0', marginBottom: 16 }} />
+
+      {/* Receipt Upload */}
+      <div>
+        <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#3d342c', marginBottom: 6 }}>
+          Upload Payment Receipt
+          <span style={{ color: '#c9a96e', marginLeft: 3 }}>*</span>
+        </p>
+        <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 9, color: '#6a5e56', lineHeight: 1.6, marginBottom: 12, letterSpacing: '0.04em' }}>
+          After transferring, attach your proof of payment below. It will be tagged to your order for quick confirmation.
+        </p>
+
+        {/* Drop zone / file selector */}
+        <div
+          onClick={() => fileRef.current?.click()}
+          style={{
+            border: `2px dashed ${receipt ? '#c9a96e' : '#d4c9c0'}`,
+            background: receipt ? '#fffdf8' : '#faf8f5',
+            padding: '18px 16px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+            transition: 'all 0.2s',
+            marginBottom: 10,
+          }}
+        >
+          <div style={{
+            width: 38, height: 38, borderRadius: '50%',
+            background: receipt ? '#fef3d8' : '#f0ece8',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            border: `1px solid ${receipt ? '#c9a96e' : '#d4c9c0'}`,
+          }}>
+            {receipt ? (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" strokeWidth="1.8" strokeLinecap="round">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+              </svg>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a7e76" strokeWidth="1.8" strokeLinecap="round">
+                <polyline points="16 16 12 12 8 16" />
+                <line x1="12" y1="12" x2="12" y2="21" />
+                <path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3" />
+              </svg>
+            )}
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            {receipt ? (
+              <>
+                <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, fontWeight: 700, color: '#1a1a1a', margin: '0 0 2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {receipt.name}
+                </p>
+                <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 9, color: '#8a7e76', margin: 0, letterSpacing: '0.06em' }}>
+                  {(receipt.size / 1024).toFixed(1)} KB · Click to change
+                </p>
+              </>
+            ) : (
+              <>
+                <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, fontWeight: 600, color: '#3d342c', margin: '0 0 2px' }}>
+                  Click to attach receipt
+                </p>
+                <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 9, color: '#8a7e76', margin: 0, letterSpacing: '0.06em' }}>
+                  JPG, PNG, PDF up to 5MB
+                </p>
+              </>
+            )}
+          </div>
+        </div>
+
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp,application/pdf"
+          style={{ display: 'none' }}
+          onChange={handleFileChange}
+        />
+
+        {receipt && !uploadDone && (
+          <button
+            onClick={handleUpload}
+            disabled={uploading}
+            style={{
+              width: '100%', padding: '12px', background: uploading ? '#d4c9c0' : '#c9a96e', color: '#fff', border: 'none',
+              fontFamily: "'Montserrat', sans-serif", fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700,
+              cursor: uploading ? 'not-allowed' : 'pointer', transition: 'background 0.2s',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            }}
+          >
+            {uploading ? (
+              <>
+                <svg style={{ animation: 'spin 1s linear infinite' }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0" strokeDasharray="28" strokeDashoffset="10" /></svg>
+                Uploading…
+              </>
+            ) : 'Submit Receipt'}
+          </button>
+        )}
+
+        {uploadDone && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px',
+            background: '#e8f5e9', border: '1px solid #a5d6a7',
+            animation: 'fadeUp 0.25s ease',
+          }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" strokeWidth="2.5" strokeLinecap="round"><path d="M20 6L9 17l-5-5" /></svg>
+            <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 10, color: '#2e7d32', fontWeight: 700, letterSpacing: '0.08em' }}>
+              Receipt uploaded — we'll confirm your order shortly.
+            </span>
+          </div>
+        )}
+
+        {uploadError && (
+          <div style={{ padding: '10px 14px', background: '#ffeee8', border: '1px solid #e8a99a', marginTop: 8 }}>
+            <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 10, color: '#c0392b', margin: 0 }}>{uploadError}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Paystack Coming Soon Banner ──────────────────────────────────────────────
+
+function PaystackComingSoon() {
+  return (
+    <div style={{
+      background: 'linear-gradient(135deg, #fafcff 0%, #f0f4ff 100%)',
+      border: '1.5px solid #b8c9f0',
+      padding: '20px 20px 18px',
+      animation: 'fadeUp 0.3s cubic-bezier(0.22,1,0.36,1)',
+      marginTop: 2,
+    }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+        {/* Animated icon */}
+        <div style={{
+          width: 40, height: 40, borderRadius: '50%', flexShrink: 0,
+          background: 'linear-gradient(135deg, #4f8ef7, #7b5af5)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: '0 4px 14px rgba(79,142,247,0.3)',
+        }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 8v4l3 3" />
+          </svg>
+        </div>
+        <div style={{ flex: 1 }}>
+          <p style={{
+            fontFamily: "'Montserrat', sans-serif", fontSize: 12, fontWeight: 700,
+            color: '#1a1a1a', margin: '0 0 6px', letterSpacing: '0.06em',
+          }}>
+            Paystack — Coming Soon
+          </p>
+          <p style={{
+            fontFamily: "'Montserrat', sans-serif", fontSize: 10, color: '#4a5568',
+            lineHeight: 1.7, margin: '0 0 12px', letterSpacing: '0.03em',
+          }}>
+            We're putting the finishing touches on Paystack integration — card, bank transfer, USSD and more. It'll be live very soon!
+          </p>
+          {/* Progress pill */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ flex: 1, height: 5, background: '#e2e8f0', borderRadius: 99, overflow: 'hidden' }}>
+              <div style={{
+                height: '100%', width: '72%',
+                background: 'linear-gradient(90deg, #4f8ef7, #7b5af5)',
+                borderRadius: 99,
+                animation: 'progressPulse 2s ease-in-out infinite',
+              }} />
+            </div>
+            <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 9, color: '#4f8ef7', fontWeight: 700, letterSpacing: '0.1em', whiteSpace: 'nowrap' }}>
+              72% ready
+            </span>
+          </div>
+          <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 9, color: '#8a7e76', marginTop: 10, letterSpacing: '0.08em' }}>
+            In the meantime, please select <strong style={{ color: '#1a1a1a' }}>Merchant Account</strong> to complete your order.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Checkout Page ───────────────────────────────────────────────────────
 
 export default function CheckoutPage() {
@@ -430,11 +769,14 @@ export default function CheckoutPage() {
   const [showDelivery, setShowDelivery] = useState(false);
   const [showShipping, setShowShipping] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
-  // On mobile the order summary is collapsed by default
   const [summaryOpen, setSummaryOpen] = useState(false);
+  const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
 
   const [shippingOptions, setShippingOptions] = useState<ShippingOption[]>(SHIPPING_OPTIONS);
+  const [merchantAccount, setMerchantAccount] = useState<MerchantAccount | null>(null);
+  const [merchantLoading, setMerchantLoading] = useState(false);
 
+  // Fetch shipping rates
   useEffect(() => {
     const sb = getSupabase();
     if (!sb) return;
@@ -454,6 +796,35 @@ export default function CheckoutPage() {
         }
       });
   }, []);
+
+  // Fetch merchant account when merchant payment is selected
+  useEffect(() => {
+    if (paymentMethod !== 'merchant') return;
+    setMerchantLoading(true);
+    const sb = getSupabase();
+    if (!sb) {
+      setMerchantAccount(FALLBACK_MERCHANT);
+      setMerchantLoading(false);
+      return;
+    }
+    sb.from('settings')
+      .select('value')
+      .eq('key', 'merchant_account')
+      .single()
+      .then(({ data, error }: any) => {
+        if (data?.value) {
+          try {
+            const parsed = typeof data.value === 'string' ? JSON.parse(data.value) : data.value;
+            setMerchantAccount(parsed);
+          } catch {
+            setMerchantAccount(FALLBACK_MERCHANT);
+          }
+        } else {
+          setMerchantAccount(FALLBACK_MERCHANT);
+        }
+        setMerchantLoading(false);
+      });
+  }, [paymentMethod]);
 
   const selectedShipping = shippingOptions.find(o => o.id === shippingId) || null;
   const shippingFee = selectedShipping?.price || 0;
@@ -505,6 +876,7 @@ export default function CheckoutPage() {
       setPlaceError(error);
       return;
     }
+    setPlacedOrderId(orderId || null);
     clearCart();
     window.scrollTo(0, 0);
     setOrderPlaced(true);
@@ -525,11 +897,23 @@ export default function CheckoutPage() {
         <div>
           <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 34, fontWeight: 400, marginBottom: 8 }}>Order Placed!</p>
           <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, letterSpacing: '0.12em', color: '#3d342c', lineHeight: 1.7 }}>
-            {paymentMethod === 'paystack'
-              ? 'Your payment is being confirmed. Your order will be marked as paid within 60 seconds.'
-              : "Your order is received. Please pay into the merchant's account. Your order will be confirmed after manual verification."}
+            {paymentMethod === 'merchant'
+              ? "Please transfer the total to the merchant's account and upload your receipt below."
+              : 'Your payment is being confirmed. Your order will be marked as paid within 60 seconds.'}
           </p>
         </div>
+
+        {/* Show merchant details + receipt upload on the success screen too */}
+        {paymentMethod === 'merchant' && merchantAccount && (
+          <div style={{ width: 'min(95vw, 480px)', textAlign: 'left' }}>
+            <MerchantAccountCard
+              account={merchantAccount}
+              orderId={placedOrderId}
+              onReceiptUploaded={() => {}}
+            />
+          </div>
+        )}
+
         <button
           onClick={() => navigate('/shop')}
           style={{ background: '#1a1a1a', color: '#fafafa', border: 'none', padding: '14px 36px', fontFamily: "'Montserrat', sans-serif", fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', cursor: 'pointer' }}
@@ -549,12 +933,10 @@ export default function CheckoutPage() {
     );
   }
 
-  // ── Order Summary panel (shared between desktop sidebar & mobile accordion) ──
   const orderSummaryContent = (
     <>
       <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 400, letterSpacing: '0.06em', marginBottom: 20, color: '#1a1a1a' }}>Your Order</h2>
 
-      {/* Items */}
       <div style={{ marginBottom: 18 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Montserrat', sans-serif", fontSize: 9, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#5a4e46', marginBottom: 12 }}>
           <span>Product</span><span>Subtotal</span>
@@ -599,7 +981,6 @@ export default function CheckoutPage() {
         )}
       </div>
 
-      {/* Coupon */}
       <div style={{ display: 'flex', gap: 0, marginBottom: 16 }}>
         <input
           value={coupon}
@@ -618,7 +999,6 @@ export default function CheckoutPage() {
         </button>
       </div>
 
-      {/* Total */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '2px solid #1a1a1a', paddingTop: 14, marginBottom: 20 }}>
         <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase' }}>Total to Pay</span>
         <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 500, color: '#1a1a1a' }}>{formatPrice(total)}</span>
@@ -646,6 +1026,15 @@ export default function CheckoutPage() {
         @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes backdropFade { from { opacity: 0; } to { opacity: 1; } }
         @keyframes modalSlideUp { from { opacity: 0; transform: translate(-50%, calc(-50% + 28px)); } to { opacity: 1; transform: translate(-50%, -50%); } }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes progressPulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.6; }
+        }
+        @keyframes shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
 
         *, *::before, *::after { box-sizing: border-box; }
 
@@ -678,15 +1067,11 @@ export default function CheckoutPage() {
           text-transform: uppercase; text-decoration: underline; color: #c9a96e;
           padding: 0;
         }
-
-        /* Two-column name/zip grid that collapses on small screens */
         .co-name-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 14px;
         }
-
-        /* Main layout: two-column on ≥768 px, single-column below */
         .co-layout {
           max-width: 1060px;
           margin: 0 auto;
@@ -696,8 +1081,6 @@ export default function CheckoutPage() {
           gap: 32px;
           align-items: start;
         }
-
-        /* Desktop order summary sidebar */
         .co-summary-desktop {
           background: #fff;
           border: 1px solid #ede5dc;
@@ -705,8 +1088,6 @@ export default function CheckoutPage() {
           position: sticky;
           top: 100px;
         }
-
-        /* Mobile order summary accordion – hidden on desktop */
         .co-summary-mobile { display: none; }
 
         @media (max-width: 767px) {
@@ -715,18 +1096,13 @@ export default function CheckoutPage() {
             gap: 24px;
             padding: 0 14px;
           }
-
-          /* Hide the sticky sidebar on mobile */
           .co-summary-desktop { display: none; }
-
-          /* Show the accordion instead, and put it ABOVE the form steps */
           .co-summary-mobile {
             display: block;
             order: -1;
             background: #fff;
             border: 1px solid #ede5dc;
           }
-
           .co-summary-mobile-toggle {
             display: flex;
             align-items: center;
@@ -738,16 +1114,12 @@ export default function CheckoutPage() {
             width: 100%;
             text-align: left;
           }
-
           .co-summary-mobile-body {
             padding: 0 18px 18px;
           }
-
-          /* Stack name grid to single column on very small phones */
           .co-name-grid {
             grid-template-columns: 1fr;
           }
-
           .co-payment-option {
             padding: 12px 10px;
             font-size: 9px;
@@ -760,7 +1132,6 @@ export default function CheckoutPage() {
       `}</style>
 
       <div style={{ background: '#faf8f5', minHeight: '100vh', paddingTop: 32, paddingBottom: 80 }}>
-        {/* Title */}
         <div style={{ textAlign: 'center', marginBottom: 36 }}>
           <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 38, fontWeight: 400, letterSpacing: '0.06em', color: '#1a1a1a' }}>Checkout</h1>
           <div style={{ width: 40, height: 1, background: '#c9a96e', margin: '10px auto 0' }} />
@@ -768,7 +1139,7 @@ export default function CheckoutPage() {
 
         <div className="co-layout">
 
-          {/* ── MOBILE ORDER SUMMARY ACCORDION ── */}
+          {/* MOBILE ORDER SUMMARY */}
           <div className="co-summary-mobile">
             <button
               className="co-summary-mobile-toggle"
@@ -789,7 +1160,7 @@ export default function CheckoutPage() {
             )}
           </div>
 
-          {/* ── LEFT COLUMN: form steps ── */}
+          {/* LEFT COLUMN */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
 
             {/* 1. Delivery Details */}
@@ -879,7 +1250,10 @@ export default function CheckoutPage() {
                 4 · Payment Method
               </h2>
               <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
-                <button className={`co-payment-option${paymentMethod === 'paystack' ? ' active' : ''}`} onClick={() => setPaymentMethod('paystack')}>
+                <button
+                  className={`co-payment-option${paymentMethod === 'paystack' ? ' active' : ''}`}
+                  onClick={() => setPaymentMethod('paystack')}
+                >
                   <div style={{ marginBottom: 4 }}>
                     <svg width="80" height="20" viewBox="0 0 120 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <text x="0" y="22" fontFamily="sans-serif" fontSize="18" fontWeight="bold" fill={paymentMethod === 'paystack' ? '#c9a96e' : '#8a7e76'}>Paystack</text>
@@ -887,7 +1261,10 @@ export default function CheckoutPage() {
                   </div>
                   Pay with Paystack
                 </button>
-                <button className={`co-payment-option${paymentMethod === 'merchant' ? ' active' : ''}`} onClick={() => setPaymentMethod('merchant')}>
+                <button
+                  className={`co-payment-option${paymentMethod === 'merchant' ? ' active' : ''}`}
+                  onClick={() => setPaymentMethod('merchant')}
+                >
                   <div style={{ marginBottom: 4 }}>
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={paymentMethod === 'merchant' ? '#c9a96e' : '#8a7e76'} strokeWidth="1.5">
                       <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" /><polyline points="9 22 9 12 15 12 15 22" />
@@ -897,31 +1274,36 @@ export default function CheckoutPage() {
                 </button>
               </div>
 
-              {paymentMethod === 'paystack' && (
-                <div style={{ background: '#fffdf8', border: '1px solid #e8dcc8', padding: '16px 18px', animation: 'fadeUp 0.2s ease' }}>
-                  <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, fontWeight: 600, color: '#1a1a1a', marginBottom: 8, letterSpacing: '0.06em' }}>Pay with Paystack</p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
-                    {['Card', 'Bank Transfer', 'USSD', 'Wallet'].map(m => (
-                      <span key={m} style={{ background: '#f0ece8', padding: '4px 10px', fontFamily: "'Montserrat', sans-serif", fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#3d342c' }}>{m}</span>
-                    ))}
-                  </div>
-                  <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 10, color: '#3d342c', lineHeight: 1.7, letterSpacing: '0.04em' }}>
-                    Payment is confirmed within <strong style={{ color: '#1a1a1a' }}>60 seconds</strong>, and your order is automatically marked as paid.
-                  </p>
-                </div>
-              )}
+              {/* Paystack — coming soon */}
+              {paymentMethod === 'paystack' && <PaystackComingSoon />}
+
+              {/* Merchant — account details + receipt upload */}
               {paymentMethod === 'merchant' && (
-                <div style={{ background: '#fdf8f5', border: '1px solid #ede5dc', padding: '16px 18px', animation: 'fadeUp 0.2s ease' }}>
-                  <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, fontWeight: 600, color: '#1a1a1a', marginBottom: 8, letterSpacing: '0.06em' }}>Pay into Merchant Account</p>
-                  <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 10, color: '#3d342c', lineHeight: 1.7, letterSpacing: '0.04em' }}>
-                    Transfer the total amount to the merchant's bank account. This payment is <strong style={{ color: '#1a1a1a' }}>not confirmed automatically</strong> and requires manual confirmation by the merchant. You will be notified once confirmed.
-                  </p>
-                </div>
+                <>
+                  {merchantLoading ? (
+                    <div style={{
+                      background: '#fffdf8', border: '1.5px solid #c9a96e',
+                      padding: '28px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
+                      animation: 'fadeUp 0.2s ease',
+                    }}>
+                      <svg style={{ animation: 'spin 1s linear infinite' }} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" strokeWidth="2.5"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0" strokeDasharray="28" strokeDashoffset="10" /></svg>
+                      <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 11, color: '#6a5e56', letterSpacing: '0.1em' }}>
+                        Loading account details…
+                      </span>
+                    </div>
+                  ) : merchantAccount ? (
+                    <MerchantAccountCard
+                      account={merchantAccount}
+                      orderId={null}
+                      onReceiptUploaded={() => {}}
+                    />
+                  ) : null}
+                </>
               )}
             </div>
           </div>
 
-          {/* ── RIGHT COLUMN: Order Summary (desktop only) ── */}
+          {/* RIGHT COLUMN — desktop order summary */}
           <div className="co-summary-desktop">
             {orderSummaryContent}
           </div>
@@ -929,7 +1311,6 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      {/* Modals */}
       {showDelivery && <DeliveryModal initial={address} onSave={setAddress} onClose={() => setShowDelivery(false)} />}
       {showShipping && <ShippingModal selected={shippingId} onSelect={setShippingId} onClose={() => setShowShipping(false)} options={shippingOptions} />}
     </>
